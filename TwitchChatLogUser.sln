@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchChatLogUser", "TwitchChatLogUser.csproj", "{6BF8FCAC-2DA3-4572-BFB9-DDC916695A74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6BF8FCAC-2DA3-4572-BFB9-DDC916695A74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF8FCAC-2DA3-4572-BFB9-DDC916695A74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF8FCAC-2DA3-4572-BFB9-DDC916695A74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF8FCAC-2DA3-4572-BFB9-DDC916695A74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F481CA7-D508-4EB6-85C9-B76509F1AE91}
+	EndGlobalSection
+EndGlobal
