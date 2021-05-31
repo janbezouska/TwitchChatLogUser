@@ -53,7 +53,7 @@ bezouska.jan.2018@skola.ssps.cz
             - Nenalezne žádné zprávy >> chyba - "Nenalezeny žádn zprávy od {username} v {kanál}."
             - Nalezne zprávy >> vypíše je
     - Uživatelské rozhraní
-        ![UI](https://user-images.githubusercontent.com/79062512/120157343-3a0bd600-c1f3-11eb-82ee-3db4cb0127af.png)
+        - ![UI](https://user-images.githubusercontent.com/79062512/120157343-3a0bd600-c1f3-11eb-82ee-3db4cb0127af.png)
 
 
 
