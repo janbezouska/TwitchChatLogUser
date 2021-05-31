@@ -1,5 +1,5 @@
 # TwitchChatLog
-### Verze 2 
+### Specifikace požadavků - Verze 2 
 Jan Bezouška  
 bezouska.jan.2018@skola.ssps.cz  
 16.5.2021  
@@ -30,3 +30,35 @@ bezouska.jan.2018@skola.ssps.cz
     - Hledání v databázi by mělo trvat max. 2 vteřiny
   - Spolehlivost
     - Snad velká :|
+
+### Funkční specifikace - verze 1
+Jan Bezouška  
+bezouska.jan.2018@skola.ssps.cz  
+16.5.2021  
+
+- Úvod
+    - Dokument je určený pro mě
+- Scénáře
+    - Způsoby použití
+        - Zadání jména, vybrání chatu a vyhledání
+    - Typy uživatelů
+        - Člověk, který se chce podívat na něčí historii chatu
+- Architektura
+    - Pracovní tok
+        - Uživatel zadá username
+        - Uživatel vybere kanál
+        - Uživatel klikne na "vyhledat"
+            - Možný error: program není spojený s databází >> "Pokud jste připojeni na internet, tento problém nevyřešíte. Pokud ne, připojte se."
+        - Program se pokusí vyhledat zprávy od zadaného jména
+            - Nenalezne žádné zprávy >> chyba - "Nenalezeny žádn zprávy od {username} v {kanál}."
+            - Nalezne zprávy >> vypíše je
+    - Uživatelské rozhraní![UI](https://user-images.githubusercontent.com/79062512/120157343-3a0bd600-c1f3-11eb-82ee-3db4cb0127af.png)
+
+
+
+
+
+
+
+
+
