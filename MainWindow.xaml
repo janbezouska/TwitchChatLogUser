@@ -5,8 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TwitchChatLogUser"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="500" MinHeight="400" MinWidth="450">
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="0.6*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="labUsername"
+               Grid.Column="1" Grid.Row="1"
+               Content="USERNAME" FontSize="20"
+               VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <Label x:Name="labChannel"
+               Grid.Column="1" Grid.Row="3"
+               Content="CHANNEL" FontSize="20"
+               VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <TextBox x:Name="tbChannel"
+                 Grid.Column="1" Grid.Row="2" Margin="10,15"/>
+        <TextBlock x:Name="tbLog"
+                   Grid.Column="1" Grid.Row="6" Margin="0,5" Foreground="#FFC70000"/>
+        <ComboBox x:Name="cbChannel"
+                  Grid.Row="4" Grid.Column="1" Margin="10, 15"/>
+        <Button x:Name="butSearch"
+                Grid.Row="5" Grid.Column="1" Margin="5, 10"
+                Content="VYHLEDAT" FontSize="20"
+                Click="butSearch_Click"/>
     </Grid>
 </Window>

@@ -24,5 +24,13 @@ namespace TwitchChatLogUser
     {
       InitializeComponent();
     }
+
+    private void butSearch_Click(object sender, RoutedEventArgs e)
+    {
+      if (tbLog.Text == string.Empty)
+        tbLog.Text = "tady se budou vypisovat chyby";
+      else
+        tbLog.Text = string.Empty;
+    }
   }
 }
