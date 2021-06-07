@@ -31,6 +31,8 @@ namespace TwitchChatLogUser
         tbLog.Text = "tady se budou vypisovat chyby";
       else
         tbLog.Text = string.Empty;
+
+      tbMessages.Text += DateTime.Now.ToString("dd.MM. yy HH:mm") + " Username: nějaká průměrně dlouhá zpráva :) xd \n";
     }
   }
 }
