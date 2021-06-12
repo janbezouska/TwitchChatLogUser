@@ -45,7 +45,7 @@
             Content="CHANNEL"
             FontSize="20" />
         <TextBox
-            x:Name="tbChannel"
+            x:Name="tbUsername"
             Grid.Row="2"
             Grid.Column="1"
             Margin="10,15" />

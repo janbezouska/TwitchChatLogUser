@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Dapper;
 
 namespace TwitchChatLogUser
 {
@@ -23,6 +15,7 @@ namespace TwitchChatLogUser
     public MainWindow()
     {
       InitializeComponent();
+      cbChannel.Items.Add("Herdyn");
     }
 
     private void butSearch_Click(object sender, RoutedEventArgs e)
@@ -33,6 +26,35 @@ namespace TwitchChatLogUser
         tbLog.Text = string.Empty;
 
       tbMessages.Text += DateTime.Now.ToString("dd.MM. yy HH:mm") + " Username: nějaká průměrně dlouhá zpráva :) xd \n";
+      bool err = false;
+      if (err)
+      {
+
+      }
+      else
+      {
+        foreach (var message in GetMessages(cbChannel.Text, tbUsername.Text))
+        {
+          tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): " + message.Message + "\n");
+        }
+      }
+    }
+
+    private List<ChatMessage> GetMessages(string channel, string username)
+    {
+      SqlConnectionStringBuilder builder = new();
+
+      builder.DataSource = "sql-twitchchatlogger.database.windows.net";
+      builder.UserID = "defaultUser";
+      builder.Password = "SuperSecret!";
+      builder.InitialCatalog = "ChatLogs";
+
+      using (SqlConnection connection = new(builder.ConnectionString))
+      {
+        //return connection.Query<ChatMessage>($"SELECT * FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
+        List<ChatMessage> msgs = connection.Query<ChatMessage>("SELECT Channel, Username, ChatMessage, TimeStamp FROM ChatLogs").AsList();
+        return msgs;
+      }
     }
   }
 }

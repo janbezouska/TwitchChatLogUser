@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace TwitchChatLogger
+namespace TwitchChatLogUser
 {
   public class ChatMessage
   {
-    public DateTime When { get; set; }
     public string Channel { get; set; }
     public string Name { get; set; }
     public string Message { get; set; }
+    public DateTime When { get; set; }
   }
 }
