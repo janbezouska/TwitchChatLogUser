@@ -50,7 +50,7 @@ bezouska.jan.2018@skola.ssps.cz
         - Uživatel klikne na "vyhledat"
             - Možný error: program není spojený s databází >> "Pokud jste připojeni na internet, tento problém nevyřešíte. Pokud ne, připojte se."
         - Program se pokusí vyhledat zprávy od zadaného jména
-            - Nenalezne žádné zprávy >> chyba - "Nenalezeny žádn zprávy od {username} v {kanál}."
+            - Nenalezne žádné zprávy >> chyba - "Nenalezeny žádné zprávy od {username} v {kanál}."
             - Nalezne zprávy >> vypíše je
     - Uživatelské rozhraní
         - ![UI](https://user-images.githubusercontent.com/79062512/120157343-3a0bd600-c1f3-11eb-82ee-3db4cb0127af.png)
