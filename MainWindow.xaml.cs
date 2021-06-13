@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
-using System.Windows;
-using Dapper;
 using System.Linq;
+using System.Windows;
 
 namespace TwitchChatLogUser
 {
@@ -13,7 +12,7 @@ namespace TwitchChatLogUser
   /// </summary>
   public partial class MainWindow : Window
   {
-    ReadDb db;
+    private ReadDb db;
 
     public MainWindow()
     {
@@ -39,7 +38,6 @@ namespace TwitchChatLogUser
     {
       tbMessages.Text = string.Empty;
 
-      bool err = false;
       if (string.IsNullOrEmpty(tbUsername.Text))
       {
         tbLog.Text = "Prosím zadej username";
@@ -65,12 +63,12 @@ namespace TwitchChatLogUser
       {
         List<ChatMessage> messages = db.GetMessages(cbChannel.Text, tbUsername.Text);
 
-        if(messages.Count == 0)
+        if (messages.Count == 0)
         {
           tbLog.Text = "Nenalezeny žádné zprávy od uživatele na vybraném kanále";
         }
 
-        foreach (var message in messages)
+        foreach (ChatMessage message in messages)
         {
           tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
         }
@@ -80,7 +78,7 @@ namespace TwitchChatLogUser
 
   public class ReadDb
   {
-    SqlConnectionStringBuilder builder = new();
+    private SqlConnectionStringBuilder builder = new();
 
     public ReadDb()
     {
@@ -115,7 +113,7 @@ namespace TwitchChatLogUser
 
     public List<string> GetChannels()
     {
-      using(SqlConnection connection = new(builder.ConnectionString))
+      using (SqlConnection connection = new(builder.ConnectionString))
       {
         return connection.Query<string>("SELECT Channel FROM ChatLogs").AsList();
       }
@@ -124,12 +122,12 @@ namespace TwitchChatLogUser
     //for debugging
     public List<ChatMessage> GetAllMessages(string channel)
     {
-      using(SqlConnection connection = new(builder.ConnectionString))
+      using (SqlConnection connection = new(builder.ConnectionString))
       {
         List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}'").AsList();
         List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}'").AsList();
 
-        List <ChatMessage> chatMessages = new();
+        List<ChatMessage> chatMessages = new();
 
         foreach (var message in messages.Zip(timeStamps, Tuple.Create))
         {
