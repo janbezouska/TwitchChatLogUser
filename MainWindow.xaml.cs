@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Windows;
 using Dapper;
+using System.Linq;
 
 namespace TwitchChatLogUser
 {
@@ -35,7 +36,8 @@ namespace TwitchChatLogUser
       {
         foreach (var message in GetMessages(cbChannel.Text, tbUsername.Text))
         {
-          tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): " + message.Message + "\n");
+          tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
+          
         }
       }
     }
@@ -52,8 +54,24 @@ namespace TwitchChatLogUser
       using (SqlConnection connection = new(builder.ConnectionString))
       {
         //return connection.Query<ChatMessage>($"SELECT * FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
-        List<ChatMessage> msgs = connection.Query<ChatMessage>("SELECT Channel, Username, ChatMessage, TimeStamp FROM ChatLogs").AsList();
-        return msgs;
+        List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
+        List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
+
+        //List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs").AsList();
+        //List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs").AsList();
+
+        List<ChatMessage> chatMessages = new();
+        foreach (var message in messages.Zip(timeStamps, Tuple.Create))
+        {
+          chatMessages.Add(new ChatMessage
+          {
+            Channel = channel,
+            Name = username,
+            Message = message.Item1,
+            When = message.Item2
+          });
+        }
+        return chatMessages;
       }
     }
   }
