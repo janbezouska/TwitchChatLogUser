@@ -13,60 +13,128 @@ namespace TwitchChatLogUser
   /// </summary>
   public partial class MainWindow : Window
   {
+    ReadDb db;
+
     public MainWindow()
     {
       InitializeComponent();
-      cbChannel.Items.Add("Herdyn");
+      db = new();
+
+      List<string> channelsToAdd = new();
+      foreach (string channel in db.GetChannels())
+      {
+        if (!channelsToAdd.Contains(channel.Trim()))
+          channelsToAdd.Add(channel.Trim());
+      }
+
+      foreach (string channel in channelsToAdd)
+      {
+        cbChannel.Items.Add(channel);
+      }
+
+      cbChannel.SelectedIndex = 1;
     }
 
     private void butSearch_Click(object sender, RoutedEventArgs e)
     {
-      if (tbLog.Text == string.Empty)
-        tbLog.Text = "tady se budou vypisovat chyby";
-      else
-        tbLog.Text = string.Empty;
+      tbMessages.Text = string.Empty;
 
-      tbMessages.Text += DateTime.Now.ToString("dd.MM. yy HH:mm") + " Username: nějaká průměrně dlouhá zpráva :) xd \n";
       bool err = false;
-      if (err)
+      if (string.IsNullOrEmpty(tbUsername.Text))
       {
+        tbLog.Text = "Prosím zadej username";
+      }
 
+      //all messages from one channel
+      else if (tbUsername.Text == "*")
+      {
+        foreach (var message in db.GetAllMessages(cbChannel.Text))
+        {
+          tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
+        }
+      }
+      else if (tbUsername.Text.Length > 25)
+      {
+        tbLog.Text = "Username je moc dlouhý - tento uživatel neexistuje (max 25 znaků)";
+      }
+      else if (tbUsername.Text.Length < 3)
+      {
+        tbLog.Text = "Username je moc krátký - tento uživatel neexistuje (min 3 znaky)";
       }
       else
       {
-        foreach (var message in GetMessages(cbChannel.Text, tbUsername.Text))
+        List<ChatMessage> messages = db.GetMessages(cbChannel.Text, tbUsername.Text);
+
+        if(messages.Count == 0)
+        {
+          tbLog.Text = "Nenalezeny žádné zprávy od uživatele na vybraném kanále";
+        }
+
+        foreach (var message in messages)
         {
           tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
-          
         }
       }
     }
+  }
 
-    private List<ChatMessage> GetMessages(string channel, string username)
+  public class ReadDb
+  {
+    SqlConnectionStringBuilder builder = new();
+
+    public ReadDb()
     {
-      SqlConnectionStringBuilder builder = new();
-
       builder.DataSource = "sql-twitchchatlogger.database.windows.net";
       builder.UserID = "defaultUser";
       builder.Password = "SuperSecret!";
       builder.InitialCatalog = "ChatLogs";
+    }
 
+    public List<ChatMessage> GetMessages(string channel, string username)
+    {
       using (SqlConnection connection = new(builder.ConnectionString))
       {
-        //return connection.Query<ChatMessage>($"SELECT * FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
         List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
         List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
 
-        //List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs").AsList();
-        //List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs").AsList();
-
         List<ChatMessage> chatMessages = new();
+
         foreach (var message in messages.Zip(timeStamps, Tuple.Create))
         {
           chatMessages.Add(new ChatMessage
           {
             Channel = channel,
             Name = username,
+            Message = message.Item1,
+            When = message.Item2
+          });
+        }
+        return chatMessages;
+      }
+    }
+
+    public List<string> GetChannels()
+    {
+      using(SqlConnection connection = new(builder.ConnectionString))
+      {
+        return connection.Query<string>("SELECT Channel FROM ChatLogs").AsList();
+      }
+    }
+
+    //for debugging
+    public List<ChatMessage> GetAllMessages(string channel)
+    {
+      using(SqlConnection connection = new(builder.ConnectionString))
+      {
+        List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}'").AsList();
+        List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}'").AsList();
+
+        List <ChatMessage> chatMessages = new();
+
+        foreach (var message in messages.Zip(timeStamps, Tuple.Create))
+        {
+          chatMessages.Add(new ChatMessage
+          {
             Message = message.Item1,
             When = message.Item2
           });
