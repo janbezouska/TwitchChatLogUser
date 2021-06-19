@@ -67,7 +67,7 @@ namespace TwitchChatLogUser
           tbLog.Text = "Nenalezeny žádné zprávy od uživatele na vybraném kanále";
 
         foreach (Message message in messages)
-          tbMessages.Text += message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + "\n";
+          tbMessages.Text += message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + Environment.NewLine;
       }
     }
 
@@ -78,7 +78,7 @@ namespace TwitchChatLogUser
       List<Message> messages = db.RandomUser(cbChannel.Text);
 
       foreach (Message message in messages)
-        tbMessages.Text += message.Username.Trim() + ": " + message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + "\n";
+        tbMessages.Text += message.Username.Trim() + ": " + message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + Environment.NewLine + Environment.NewLine;
     }
   }
 
