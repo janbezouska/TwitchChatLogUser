@@ -8,8 +8,10 @@
     Title="MainWindow"
     Width="550"
     Height="450"
-    MinWidth="450"
-    MinHeight="400"
+    MinWidth="550"
+    MinHeight="450"
+    MaxWidth="550"
+    MaxHeight="450"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
