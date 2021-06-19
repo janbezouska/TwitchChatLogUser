@@ -77,13 +77,21 @@ namespace TwitchChatLogUser
 
     private void butRand_Click(object sender, RoutedEventArgs e)
     {
+      tbMessages.Text = string.Empty;
 
+      List<ChatMessage> messages = db.RandomUser(cbChannel.Text);
+
+      foreach (ChatMessage message in messages)
+      {
+        tbMessages.Text += message.Name.Trim() + ": " + message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
+      }
     }
   }
 
   public class ReadDb
   {
     private SqlConnectionStringBuilder builder = new();
+    Random rnd = new();
 
     public ReadDb()
     {
@@ -97,7 +105,7 @@ namespace TwitchChatLogUser
     {
       using (SqlConnection connection = new(builder.ConnectionString))
       {
-        List<string> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
+        List<string> messages = connection.Query<string>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
         List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
 
         List<ChatMessage> chatMessages = new();
@@ -121,6 +129,35 @@ namespace TwitchChatLogUser
       using (SqlConnection connection = new(builder.ConnectionString))
       {
         return connection.Query<string>("SELECT Channel FROM ChatLogs").AsList();
+      }
+    }
+
+    public List<ChatMessage> RandomUser(string channel)
+    {
+      using (SqlConnection connection = new(builder.ConnectionString))
+      {
+        List<string> allUsers = connection.Query<string>($"SELECT Username FROM ChatLogs WHERE Channel = '{channel}'").AsList();
+        string user = allUsers[rnd.Next(0, allUsers.Count)];
+
+        List<string> messages = connection.Query<string>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{user}'").AsList();
+        List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{user}'").AsList();
+
+        List<ChatMessage> chatMessages = new();
+
+        foreach (var message in messages.Zip(timeStamps, Tuple.Create))
+        {
+          ChatMessage chatMessage = new()
+          {
+            Channel = channel,
+            Name = user,
+            Message = message.Item1,
+            When = message.Item2
+          };
+
+          chatMessages.Add(chatMessage);
+        }
+
+        return chatMessages;
       }
     }
 
