@@ -80,7 +80,10 @@
             x:Name="cbChannel"
             Grid.Row="4"
             Grid.Column="1"
-            Margin="10,15" />
+            Margin="10,15"
+            FontSize="18"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"/>
         <Button
             x:Name="butSearch"
             Grid.Row="5"
@@ -88,7 +91,22 @@
             Margin="5,10"
             Click="butSearch_Click"
             Content="VYHLEDAT"
-            FontSize="20" />
-
+            FontSize="20"
+            HorizontalAlignment="Left"
+            Width="120"/>
+        <Button
+            x:Name="butRand"
+            Grid.Row="5"
+            Grid.Column="1"
+            Margin="5,10"
+            FontSize="10"
+            HorizontalAlignment="Right"
+            Width="65"
+            Click="butRand_Click">
+            <TextBlock 
+                TextWrapping="Wrap"
+                Text="Náhodný uživatel"
+                FontSize="15"/>
+        </Button>
     </Grid>
 </Window>

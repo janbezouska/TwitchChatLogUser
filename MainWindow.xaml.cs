@@ -74,6 +74,11 @@ namespace TwitchChatLogUser
         }
       }
     }
+
+    private void butRand_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
   }
 
   public class ReadDb
