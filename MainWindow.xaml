@@ -92,7 +92,7 @@
             Grid.Column="1"
             Margin="5,10"
             Click="butSearch_Click"
-            Content="VYHLEDAT"
+            Content="SEARCH"
             FontSize="20"
             HorizontalAlignment="Left"
             Width="120"/>
@@ -107,7 +107,7 @@
             Click="butRand_Click">
             <TextBlock 
                 TextWrapping="Wrap"
-                Text="Náhodný uživatel"
+                Text="Random user"
                 FontSize="15"/>
         </Button>
     </Grid>
