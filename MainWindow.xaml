@@ -66,8 +66,7 @@
             Background="#4CF916E5"
             Foreground="#FFC70000"
             TextAlignment="Center"
-            TextWrapping="Wrap"
-            Text="Searching may take a few seconds! (be patient)"/>
+            TextWrapping="Wrap"/>
         <ScrollViewer
             Grid.Row="1"
             Grid.RowSpan="6"

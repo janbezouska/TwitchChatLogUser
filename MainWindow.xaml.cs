@@ -32,6 +32,8 @@ namespace TwitchChatLogUser
       }
 
       cbChannel.SelectedIndex = 1;
+
+      tbLog.Text = "Searching will take a few seconds! \n(be patient)";
     }
 
     private void butSearch_Click(object sender, RoutedEventArgs e)
@@ -47,9 +49,7 @@ namespace TwitchChatLogUser
       else if (tbUsername.Text == "*")
       {
         foreach (var message in db.GetAllMessages(cbChannel.Text))
-        {
-          tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
-        }
+          tbMessages.Text += message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + "\n";
       }
       else if (tbUsername.Text.Length > 25)
       {
@@ -61,17 +61,13 @@ namespace TwitchChatLogUser
       }
       else
       {
-        List<ChatMessage> messages = db.GetMessages(cbChannel.Text, tbUsername.Text);
+        List<Message> messages = db.GetMessages(cbChannel.Text, tbUsername.Text);
 
         if (messages.Count == 0)
-        {
           tbLog.Text = "Nenalezeny žádné zprávy od uživatele na vybraném kanále";
-        }
 
-        foreach (ChatMessage message in messages)
-        {
-          tbMessages.Text += message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
-        }
+        foreach (Message message in messages)
+          tbMessages.Text += message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + "\n";
       }
     }
 
@@ -79,19 +75,17 @@ namespace TwitchChatLogUser
     {
       tbMessages.Text = string.Empty;
 
-      List<ChatMessage> messages = db.RandomUser(cbChannel.Text);
+      List<Message> messages = db.RandomUser(cbChannel.Text);
 
-      foreach (ChatMessage message in messages)
-      {
-        tbMessages.Text += message.Name.Trim() + ": " + message.When.ToString("dd.MM yy (HH:mm): ") + message.Message + "\n";
-      }
+      foreach (Message message in messages)
+        tbMessages.Text += message.Username.Trim() + ": " + message.TimeStamp.ToString("dd.MM yy (HH:mm): ") + message.ChatMessage + "\n";
     }
   }
 
   public class ReadDb
   {
     private SqlConnectionStringBuilder builder = new();
-    Random rnd = new();
+    private Random rnd = new();
 
     public ReadDb()
     {
@@ -101,26 +95,11 @@ namespace TwitchChatLogUser
       builder.InitialCatalog = "ChatLogs";
     }
 
-    public List<ChatMessage> GetMessages(string channel, string username)
+    public List<Message> GetMessages(string channel, string username)
     {
       using (SqlConnection connection = new(builder.ConnectionString))
       {
-        List<string> messages = connection.Query<string>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
-        List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();
-
-        List<ChatMessage> chatMessages = new();
-
-        foreach (var message in messages.Zip(timeStamps, Tuple.Create))
-        {
-          chatMessages.Add(new ChatMessage
-          {
-            Channel = channel,
-            Name = username,
-            Message = message.Item1,
-            When = message.Item2
-          });
-        }
-        return chatMessages;
+        return connection.Query<Message>($"SELECT * FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{username}'").AsList();;
       }
     }
 
@@ -132,54 +111,23 @@ namespace TwitchChatLogUser
       }
     }
 
-    public List<ChatMessage> RandomUser(string channel)
+    public List<Message> RandomUser(string channel)
     {
       using (SqlConnection connection = new(builder.ConnectionString))
       {
         List<string> allUsers = connection.Query<string>($"SELECT Username FROM ChatLogs WHERE Channel = '{channel}'").AsList();
         string user = allUsers[rnd.Next(0, allUsers.Count)];
 
-        List<string> messages = connection.Query<string>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{user}'").AsList();
-        List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{user}'").AsList();
-
-        List<ChatMessage> chatMessages = new();
-
-        foreach (var message in messages.Zip(timeStamps, Tuple.Create))
-        {
-          ChatMessage chatMessage = new()
-          {
-            Channel = channel,
-            Name = user,
-            Message = message.Item1,
-            When = message.Item2
-          };
-
-          chatMessages.Add(chatMessage);
-        }
-
-        return chatMessages;
+        return connection.Query<Message>($"SELECT * FROM ChatLogs WHERE Channel = '{channel.ToLower()}' AND Username = '{user}'").AsList();
       }
     }
 
     //for debugging
-    public List<ChatMessage> GetAllMessages(string channel)
+    public List<Message> GetAllMessages(string channel)
     {
       using (SqlConnection connection = new(builder.ConnectionString))
       {
-        List<String> messages = connection.Query<String>($"SELECT ChatMessage FROM ChatLogs WHERE Channel = '{channel.ToLower()}'").AsList();
-        List<DateTime> timeStamps = connection.Query<DateTime>($"SELECT TimeStamp FROM ChatLogs WHERE Channel = '{channel.ToLower()}'").AsList();
-
-        List<ChatMessage> chatMessages = new();
-
-        foreach (var message in messages.Zip(timeStamps, Tuple.Create))
-        {
-          chatMessages.Add(new ChatMessage
-          {
-            Message = message.Item1,
-            When = message.Item2
-          });
-        }
-        return chatMessages;
+        return connection.Query<Message>("SELECT * FROM ChatLogs").AsList();
       }
     }
   }

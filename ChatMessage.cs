@@ -2,11 +2,12 @@
 
 namespace TwitchChatLogUser
 {
-  public class ChatMessage
+  public class Message
   {
     public string Channel { get; set; }
-    public string Name { get; set; }
-    public string Message { get; set; }
-    public DateTime When { get; set; }
+    public string Username { get; set; }
+    public string ChatMessage { get; set; }
+    public DateTime TimeStamp { get; set; }
+    public int ID { get; set; }
   }
 }
